@@ -1,0 +1,10 @@
+Initialize
+  -store - include thunk and logger middleware
+  -action - recieveAllMonsters
+  - move api call to util
+  - make thunkAction
+  - reducer for recieveAllMonsters
+  - add provider and connect
+  - create MonstersIndexContainer
+  - update monster_list.jsx -> should just display all monsters in store
+  - add search for monsers (use onChange to filter)
