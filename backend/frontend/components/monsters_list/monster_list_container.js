@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import MonsterList from "./monster_list";
-import {fetchAllMonsters} from "../../actions/monster_actions"
+import {fetchAllMonsters, fetchSelectedMonster} from "../../actions/monster_actions"
 
 
 const mapStateToProps = (state) => ({
@@ -8,7 +8,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  fetchAllMonsters: monsters => dispatch(fetchAllMonsters(monsters))
+  fetchAllMonsters: monsters => dispatch(fetchAllMonsters(monsters)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(MonsterList);

@@ -90,27 +90,44 @@
 /*!*********************************************!*\
   !*** ./frontend/actions/monster_actions.js ***!
   \*********************************************/
-/*! exports provided: RECEIVE_MONSTERS, receiveMonsters, fetchAllMonsters */
+/*! exports provided: RECEIVE_MONSTERS, RECEIVE_MONSTER, receiveMonsters, receiveMonster, fetchAllMonsters, fetchSelectedMonster */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RECEIVE_MONSTERS", function() { return RECEIVE_MONSTERS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RECEIVE_MONSTER", function() { return RECEIVE_MONSTER; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "receiveMonsters", function() { return receiveMonsters; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "receiveMonster", function() { return receiveMonster; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fetchAllMonsters", function() { return fetchAllMonsters; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fetchSelectedMonster", function() { return fetchSelectedMonster; });
 /* harmony import */ var _util_dnd_api_util__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../util/dnd_api_util */ "./frontend/util/dnd_api_util.js");
 
 var RECEIVE_MONSTERS = "RECEIVE_MONSTERS";
+var RECEIVE_MONSTER = "RECEIVE_MONSTER";
 var receiveMonsters = function receiveMonsters(monsters) {
   return {
     type: RECEIVE_MONSTERS,
     monsters: monsters.results
   };
 };
+var receiveMonster = function receiveMonster(monster) {
+  return {
+    type: RECEIVE_MONSTER,
+    monster: monster
+  };
+};
 var fetchAllMonsters = function fetchAllMonsters() {
   return function (dispatch) {
     return _util_dnd_api_util__WEBPACK_IMPORTED_MODULE_0__["getMonsters"]().then(function (monsters) {
       dispatch(receiveMonsters(monsters));
+    });
+  };
+};
+var fetchSelectedMonster = function fetchSelectedMonster(index) {
+  return function (dispatch) {
+    return _util_dnd_api_util__WEBPACK_IMPORTED_MODULE_0__["getMonster"](index).then(function (monster) {
+      dispatch(receiveMonster(monster));
     });
   };
 };
@@ -140,10 +157,10 @@ var App = function App() {
 
 /***/ }),
 
-/***/ "./frontend/components/monsters_list/monster_list.jsx":
-/*!************************************************************!*\
-  !*** ./frontend/components/monsters_list/monster_list.jsx ***!
-  \************************************************************/
+/***/ "./frontend/components/monster_show/monster_show.jsx":
+/*!***********************************************************!*\
+  !*** ./frontend/components/monster_show/monster_show.jsx ***!
+  \***********************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -175,18 +192,152 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 
 
+var MonsterShow = /*#__PURE__*/function (_React$Component) {
+  _inherits(MonsterShow, _React$Component);
+
+  var _super = _createSuper(MonsterShow);
+
+  function MonsterShow(props) {
+    _classCallCheck(this, MonsterShow);
+
+    return _super.call(this, props);
+  }
+
+  _createClass(MonsterShow, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      this.props.fetchSelectedMonster(this.props.selectedMonster);
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var monsterIndex = this.props.monster.index;
+      var _selectedMonster = this.props.selectedMonster;
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, monsterIndex === _selectedMonster ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", null, this.props.monster.name), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", null, this.props.monster.type)) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, this.props.selectedMonster));
+    }
+  }]);
+
+  return MonsterShow;
+}(react__WEBPACK_IMPORTED_MODULE_0___default.a.Component);
+
+/* harmony default export */ __webpack_exports__["default"] = (MonsterShow);
+
+/***/ }),
+
+/***/ "./frontend/components/monster_show/monster_show_container.js":
+/*!********************************************************************!*\
+  !*** ./frontend/components/monster_show/monster_show_container.js ***!
+  \********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _actions_monster_actions__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../actions/monster_actions */ "./frontend/actions/monster_actions.js");
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+/* harmony import */ var _monster_show__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./monster_show */ "./frontend/components/monster_show/monster_show.jsx");
+
+
+
+
+var mapStateToProps = function mapStateToProps(state) {
+  return {
+    monster: state.monster
+  };
+};
+
+var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+  return {
+    fetchSelectedMonster: function fetchSelectedMonster(monsterIndex) {
+      return dispatch(Object(_actions_monster_actions__WEBPACK_IMPORTED_MODULE_0__["fetchSelectedMonster"])(monsterIndex));
+    }
+  };
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_1__["connect"])(mapStateToProps, mapDispatchToProps)(_monster_show__WEBPACK_IMPORTED_MODULE_2__["default"]));
+
+/***/ }),
+
+/***/ "./frontend/components/monsters_list/monster_list.jsx":
+/*!************************************************************!*\
+  !*** ./frontend/components/monsters_list/monster_list.jsx ***!
+  \************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _monster_list_index__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./monster_list_index */ "./frontend/components/monsters_list/monster_list_index.jsx");
+/* harmony import */ var _monster_show_monster_show_container__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../monster_show/monster_show_container */ "./frontend/components/monster_show/monster_show_container.js");
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { return function () { var Super = _getPrototypeOf(Derived), result; if (_isNativeReflectConstruct()) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+
+
+
+
 var MonsterList = /*#__PURE__*/function (_React$Component) {
   _inherits(MonsterList, _React$Component);
 
   var _super = _createSuper(MonsterList);
 
   function MonsterList(props) {
+    var _this;
+
     _classCallCheck(this, MonsterList);
 
-    return _super.call(this, props);
+    _this = _super.call(this, props);
+    _this.state = {
+      monsterSearch: "",
+      selectedMonster: null
+    };
+    _this.handleChange = _this.handleChange.bind(_assertThisInitialized(_this));
+    _this.handleClick = _this.handleClick.bind(_assertThisInitialized(_this));
+    return _this;
   }
 
   _createClass(MonsterList, [{
+    key: "handleChange",
+    value: function handleChange(event) {
+      this.setState({
+        monsterSearch: event.target.value
+      });
+    } //when someone clicks on a monster "monsterSelect" is populated with the api index
+    //fetch selected monster calls the monster api and passes the index
+    //the monster's limited data is then replaced in the store with the expanded info from the new api call
+    //that is then rendered to the page via the monster show component
+    // it may be more optimal to store the expanded monster data in a separate collection
+
+  }, {
+    key: "handleClick",
+    value: function handleClick(event) {
+      debugger;
+      this.setState({
+        selectedMonster: event.target.id
+      });
+    }
+  }, {
     key: "componentDidMount",
     value: function componentDidMount() {
       this.props.fetchAllMonsters();
@@ -194,11 +345,13 @@ var MonsterList = /*#__PURE__*/function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
-      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", null, this.props.monsters.map(function (el) {
-        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
-          key: el.index,
-          id: el.index
-        }, el.name);
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, this.state.selectedMonster ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_monster_show_monster_show_container__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        selectedMonster: this.state.selectedMonster
+      }) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_monster_list_index__WEBPACK_IMPORTED_MODULE_1__["default"], {
+        clickFunc: this.handleClick,
+        changeFunc: this.handleChange,
+        monsters: this.props.monsters,
+        monsterSearch: this.state.monsterSearch
       }));
     }
   }]);
@@ -241,6 +394,44 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_0__["connect"])(mapStateToProps, mapDispatchToProps)(_monster_list__WEBPACK_IMPORTED_MODULE_1__["default"]));
+
+/***/ }),
+
+/***/ "./frontend/components/monsters_list/monster_list_index.jsx":
+/*!******************************************************************!*\
+  !*** ./frontend/components/monsters_list/monster_list_index.jsx ***!
+  \******************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _util_general_util__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../util/general_util */ "./frontend/util/general_util.js");
+
+
+
+var MonsterListIndex = function MonsterListIndex(_ref) {
+  var changeFunc = _ref.changeFunc,
+      monsters = _ref.monsters,
+      monsterSearch = _ref.monsterSearch,
+      clickFunc = _ref.clickFunc;
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Search", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+    type: "text",
+    name: "search",
+    onChange: changeFunc,
+    value: monsterSearch
+  }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", null, monsters.map(function (el) {
+    return Object(_util_general_util__WEBPACK_IMPORTED_MODULE_1__["displayMonster"])(el.index, monsterSearch) ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
+      onClick: clickFunc,
+      key: el.index,
+      id: el.index
+    }, el.name) : "";
+  })));
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (MonsterListIndex);
 
 /***/ }),
 
@@ -313,6 +504,38 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _actions_monster_actions__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../actions/monster_actions */ "./frontend/actions/monster_actions.js");
 
 
+var monsterReducer = function monsterReducer() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  var action = arguments.length > 1 ? arguments[1] : undefined;
+  Object.freeze(state);
+  var newState = Object.assign({}, state);
+
+  switch (action.type) {
+    case _actions_monster_actions__WEBPACK_IMPORTED_MODULE_0__["RECEIVE_MONSTER"]:
+      newState = action.monster;
+      return newState;
+
+    default:
+      return state;
+  }
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (monsterReducer);
+
+/***/ }),
+
+/***/ "./frontend/reducers/monsters_reducer.js":
+/*!***********************************************!*\
+  !*** ./frontend/reducers/monsters_reducer.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _actions_monster_actions__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../actions/monster_actions */ "./frontend/actions/monster_actions.js");
+
+
 var monstersReducer = function monstersReducer() {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
   var action = arguments.length > 1 ? arguments[1] : undefined;
@@ -322,7 +545,6 @@ var monstersReducer = function monstersReducer() {
   switch (action.type) {
     case _actions_monster_actions__WEBPACK_IMPORTED_MODULE_0__["RECEIVE_MONSTERS"]:
       action.monsters.forEach(function (monster) {
-        ;
         newState[monster.index] = monster;
       });
       return newState;
@@ -346,11 +568,14 @@ var monstersReducer = function monstersReducer() {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! redux */ "./node_modules/redux/es/redux.js");
-/* harmony import */ var _monster_reducer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./monster_reducer */ "./frontend/reducers/monster_reducer.js");
+/* harmony import */ var _monsters_reducer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./monsters_reducer */ "./frontend/reducers/monsters_reducer.js");
+/* harmony import */ var _monster_reducer__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./monster_reducer */ "./frontend/reducers/monster_reducer.js");
+
 
 
 var rootReducer = Object(redux__WEBPACK_IMPORTED_MODULE_0__["combineReducers"])({
-  monsters: _monster_reducer__WEBPACK_IMPORTED_MODULE_1__["default"]
+  monsters: _monsters_reducer__WEBPACK_IMPORTED_MODULE_1__["default"],
+  monster: _monster_reducer__WEBPACK_IMPORTED_MODULE_2__["default"]
 });
 /* harmony default export */ __webpack_exports__["default"] = (rootReducer);
 
@@ -388,17 +613,40 @@ var configureStore = function configureStore() {
 /*!***************************************!*\
   !*** ./frontend/util/dnd_api_util.js ***!
   \***************************************/
-/*! exports provided: getMonsters */
+/*! exports provided: getMonsters, getMonster */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getMonsters", function() { return getMonsters; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getMonster", function() { return getMonster; });
 var getMonsters = function getMonsters() {
   return $.ajax({
     type: "GET",
     url: "http://www.dnd5eapi.co/api/monsters/"
   });
+};
+var getMonster = function getMonster(index) {
+  return $.ajax({
+    type: "GET",
+    url: "http://www.dnd5eapi.co/api/monsters/".concat(index)
+  });
+};
+
+/***/ }),
+
+/***/ "./frontend/util/general_util.js":
+/*!***************************************!*\
+  !*** ./frontend/util/general_util.js ***!
+  \***************************************/
+/*! exports provided: displayMonster */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "displayMonster", function() { return displayMonster; });
+var displayMonster = function displayMonster(monsterName, monsterSearch) {
+  return monsterName.includes(monsterSearch);
 };
 
 /***/ }),
